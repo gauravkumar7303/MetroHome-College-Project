@@ -1,14 +1,185 @@
+// //app/profile/inquiries/page.js - User's inquiries dashboard with status tracking and property details  
+// 'use client'
+
+// import { useState, useEffect } from 'react'
+// import Link from 'next/link'
+// import { FaEnvelope, FaMapMarkerAlt, FaCheckCircle, FaSpinner, FaEye, FaClock } from 'react-icons/fa'
+// import toast from 'react-hot-toast'
+
+// export default function MyInquiriesPage() {
+//   const [inquiries, setInquiries] = useState([])
+//   const [loading, setLoading] = useState(true)
+//   const [filter, setFilter] = useState('all')
+
+//   useEffect(() => {
+//     fetchInquiries()
+//   }, [filter])
+
+//   const fetchInquiries = async () => {
+//     setLoading(true)
+//     try {
+//       const token = localStorage.getItem('metrohome_token')
+//       const query = filter !== 'all' ? `?status=${filter}` : ''
+
+//       const res = await fetch(`/api/inquiries${query}`, {
+//         headers: {
+//           'Authorization': `Bearer ${token}`
+//         }
+//       })
+
+//       const data = await res.json()
+
+//       if (res.ok) {
+//         setInquiries(data.inquiries || [])
+//       } else {
+//         toast.error(data.error || 'Failed to fetch inquiries')
+//       }
+//     } catch (error) {
+//       console.error('Error fetching inquiries:', error)
+//       toast.error('Something went wrong')
+//     } finally {
+//       setLoading(false)
+//     }
+//   }
+
+//   const getStatusBadge = (status) => {
+//     const statusMap = {
+//       'new': 'bg-yellow-100 text-yellow-700',
+//       'contacted': 'bg-blue-100 text-blue-700',
+//       'viewed': 'bg-purple-100 text-purple-700',
+//       'negotiation': 'bg-orange-100 text-orange-700',
+//       'converted': 'bg-green-100 text-green-700',
+//       'lost': 'bg-red-100 text-red-700'
+//     }
+//     return statusMap[status] || 'bg-gray-100 text-gray-700'
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gray-50 pt-20">
+//       <div className="container-custom py-8">
+//         <h1 className="text-3xl font-bold text-gray-900 mb-2">My Inquiries</h1>
+//         <p className="text-gray-600 mb-8">Track all your property inquiries</p>
+
+//         {/* Filter Tabs */}
+//         <div className="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-xl shadow-sm inline-block">
+//           {['all', 'new', 'contacted', 'negotiation', 'converted', 'lost'].map((status) => (
+//             <button
+//               key={status}
+//               onClick={() => setFilter(status)}
+//               className={`px-6 py-2 rounded-lg font-medium capitalize transition-all ${
+//                 filter === status ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+//               }`}
+//             >
+//               {status}
+//             </button>
+//           ))}
+//         </div>
+
+//         {loading ? (
+//           <div className="flex justify-center items-center h-64">
+//             <FaSpinner className="animate-spin text-3xl text-green-600" />
+//           </div>
+//         ) : inquiries.length === 0 ? (
+//           <div className="bg-white rounded-2xl p-12 text-center">
+//             <FaEnvelope className="text-6xl text-gray-300 mx-auto mb-4" />
+//             <h3 className="text-2xl font-bold text-gray-900 mb-2">No inquiries yet</h3>
+//             <p className="text-gray-600 mb-6">Start exploring properties and send inquiries</p>
+//             <Link href="/properties" className="bg-green-600 text-white px-8 py-3 rounded-xl hover:bg-green-700">
+//               Browse Properties
+//             </Link>
+//           </div>
+//         ) : (
+//           <div className="space-y-4">
+//             {inquiries.map((inquiry) => (
+//               <div key={inquiry.id} className="bg-white rounded-xl p-6 shadow hover:shadow-lg transition">
+//                 <div className="flex flex-col md:flex-row justify-between gap-4">
+//                   <div className="flex-1">
+//                     <div className="flex items-start justify-between">
+//                       <div>
+//                         <h3 className="text-xl font-bold text-gray-900 mb-2">{inquiry.propertyTitle}</h3>
+//                         <p className="flex items-center text-gray-600">
+//                           <FaMapMarkerAlt className="mr-2 text-green-500" />
+//                           {inquiry.propertyLocation}
+//                         </p>
+//                       </div>
+//                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(inquiry.status)}`}>
+//                         {inquiry.status.toUpperCase()}
+//                       </span>
+//                     </div>
+
+//                     <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+//                       <p className="font-semibold text-gray-900 mb-2">Your Message:</p>
+//                       <p className="text-gray-600">{inquiry.message}</p>
+//                     </div>
+
+//                     {inquiry.ownerName && (
+//                       <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+//                         <p className="font-semibold text-gray-900 mb-2">Property Owner</p>
+//                         <div className="flex flex-wrap gap-4 text-sm">
+//                           <p><strong>Name:</strong> {inquiry.ownerName}</p>
+//                           {inquiry.ownerEmail && <p><strong>Email:</strong> {inquiry.ownerEmail}</p>}
+//                           {inquiry.ownerPhone && <p><strong>Phone:</strong> {inquiry.ownerPhone}</p>}
+//                         </div>
+//                       </div>
+//                     )}
+
+//                     <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
+//                       <span className="flex items-center gap-1">
+//                         <FaClock /> {new Date(inquiry.createdAt).toLocaleDateString()}
+//                       </span>
+//                       {inquiry.status === 'converted' && (
+//                         <span className="flex items-center gap-1 text-green-600">
+//                           <FaCheckCircle /> Converted to Deal
+//                         </span>
+//                       )}
+//                     </div>
+//                   </div>
+
+//                   <div className="flex gap-2">
+//                     <Link
+//                       href={`/properties/${inquiry.propertyId}`}
+//                       className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 flex items-center gap-1"
+//                     >
+//                       <FaEye /> View Property
+//                     </Link>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   )
+// }
+
+
+//app/profile/inquiries/page.js - User's inquiries dashboard with status tracking and property details
 'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FaEnvelope, FaMapMarkerAlt, FaCheckCircle, FaSpinner, FaEye, FaClock } from 'react-icons/fa'
+import {
+  FaEnvelope, FaMapMarkerAlt, FaCheckCircle, FaSpinner,
+  FaEye, FaClock, FaFileContract, FaRupeeSign, FaTimes
+} from 'react-icons/fa'
 import toast from 'react-hot-toast'
 
 export default function MyInquiriesPage() {
   const [inquiries, setInquiries] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
+
+  // Convert to Deal Modal
+  const [showConvertModal, setShowConvertModal] = useState(false)
+  const [selectedInquiry, setSelectedInquiry] = useState(null)
+  const [dealForm, setDealForm] = useState({
+    agreedPrice: '',
+    securityDeposit: '',
+    startDate: '',
+    duration: '12'
+  })
+  const [isConverting, setIsConverting] = useState(false)
 
   useEffect(() => {
     fetchInquiries()
@@ -19,15 +190,13 @@ export default function MyInquiriesPage() {
     try {
       const token = localStorage.getItem('metrohome_token')
       const query = filter !== 'all' ? `?status=${filter}` : ''
-      
+
       const res = await fetch(`/api/inquiries${query}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       })
-      
+
       const data = await res.json()
-      
+
       if (res.ok) {
         setInquiries(data.inquiries || [])
       } else {
@@ -38,6 +207,113 @@ export default function MyInquiriesPage() {
       toast.error('Something went wrong')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleConvertToDeal = (inquiry) => {
+    // Extract numeric price from string like "₹45,000/month"
+    const priceMatch = inquiry.propertyPrice?.match(/\d+/g)
+    const priceValue = priceMatch ? parseInt(priceMatch.join('')) : 0
+
+    setSelectedInquiry(inquiry)
+    setDealForm({
+      agreedPrice: priceValue.toString(),
+      securityDeposit: (priceValue * 2).toString(),
+      startDate: new Date().toISOString().split('T')[0],
+      duration: '12'
+    })
+    setShowConvertModal(true)
+  }
+
+  // const handleConvertSubmit = async (e) => {
+  //   e.preventDefault()
+
+  //   if (!dealForm.agreedPrice || !dealForm.startDate) {
+  //     toast.error('Please fill all required fields')
+  //     return
+  //   }
+
+  //   setIsConverting(true)
+  //   toast.loading('Converting to deal and generating documents...', { id: 'convert' })
+
+  //   try {
+  //     const token = localStorage.getItem('metrohome_token')
+
+  //     const res = await fetch(`/api/inquiries/${selectedInquiry.id}/convert-to-deal`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`
+  //       },
+  //       body: JSON.stringify({
+  //         agreedPrice: parseInt(dealForm.agreedPrice),
+  //         securityDeposit: parseInt(dealForm.securityDeposit) || 0,
+  //         startDate: dealForm.startDate,
+  //         duration: parseInt(dealForm.duration)
+  //       })
+  //     })
+
+  //     const data = await res.json()
+
+  //     if (res.ok) {
+  //       toast.success('Deal created! Documents sent to email.', { id: 'convert' })
+  //       setShowConvertModal(false)
+  //       fetchInquiries() // Refresh list
+  //     } else {
+  //       toast.error(data.error || 'Conversion failed', { id: 'convert' })
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error)
+  //     toast.error('Something went wrong', { id: 'convert' })
+  //   } finally {
+  //     setIsConverting(false)
+  //   }
+  // }
+
+  const handleConvertSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!dealForm.agreedPrice || !dealForm.startDate) {
+      toast.error('Please fill all required fields')
+      return
+    }
+
+    setIsConverting(true)
+    toast.loading('Converting to deal and generating documents...', { id: 'convert' })
+
+    try {
+      const token = localStorage.getItem('metrohome_token')
+
+      // ✅ CHANGE THIS - New flat route
+      const res = await fetch(`/api/inquiries/convert-to-deal`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          inquiryId: selectedInquiry.id,  // ← Send ID in body, not URL
+          agreedPrice: parseInt(dealForm.agreedPrice),
+          securityDeposit: parseInt(dealForm.securityDeposit) || 0,
+          startDate: dealForm.startDate,
+          duration: parseInt(dealForm.duration)
+        })
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        toast.success('Deal created! Documents sent to email.', { id: 'convert' })
+        setShowConvertModal(false)
+        fetchInquiries()
+      } else {
+        toast.error(data.error || 'Conversion failed', { id: 'convert' })
+      }
+    } catch (error) {
+      console.error('Error:', error)
+      toast.error('Something went wrong', { id: 'convert' })
+    } finally {
+      setIsConverting(false)
     }
   }
 
@@ -53,6 +329,10 @@ export default function MyInquiriesPage() {
     return statusMap[status] || 'bg-gray-100 text-gray-700'
   }
 
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const minDate = tomorrow.toISOString().split('T')[0]
+
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="container-custom py-8">
@@ -65,9 +345,8 @@ export default function MyInquiriesPage() {
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`px-6 py-2 rounded-lg font-medium capitalize transition-all ${
-                filter === status ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-gray-100'
-              }`}
+              className={`px-6 py-2 rounded-lg font-medium capitalize transition-all ${filter === status ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+                }`}
             >
               {status}
             </button>
@@ -100,17 +379,18 @@ export default function MyInquiriesPage() {
                           <FaMapMarkerAlt className="mr-2 text-green-500" />
                           {inquiry.propertyLocation}
                         </p>
+                        <p className="text-green-600 font-bold mt-1">{inquiry.propertyPrice}</p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadge(inquiry.status)}`}>
                         {inquiry.status.toUpperCase()}
                       </span>
                     </div>
-                    
+
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                       <p className="font-semibold text-gray-900 mb-2">Your Message:</p>
                       <p className="text-gray-600">{inquiry.message}</p>
                     </div>
-                    
+
                     {inquiry.ownerName && (
                       <div className="mt-4 p-4 bg-blue-50 rounded-lg">
                         <p className="font-semibold text-gray-900 mb-2">Property Owner</p>
@@ -121,7 +401,7 @@ export default function MyInquiriesPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="mt-4 flex items-center gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-1">
                         <FaClock /> {new Date(inquiry.createdAt).toLocaleDateString()}
@@ -133,14 +413,33 @@ export default function MyInquiriesPage() {
                       )}
                     </div>
                   </div>
-                  
-                  <div className="flex gap-2">
+
+                  <div className="flex flex-col gap-2">
                     <Link
                       href={`/properties/${inquiry.propertyId}`}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 flex items-center gap-1"
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 flex items-center justify-center gap-1"
                     >
                       <FaEye /> View Property
                     </Link>
+
+                    {/* ✅ Convert to Deal Button - Only for non-converted inquiries */}
+                    {inquiry.status !== 'converted' && inquiry.status !== 'lost' && (
+                      <button
+                        onClick={() => handleConvertToDeal(inquiry)}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 flex items-center justify-center gap-1"
+                      >
+                        <FaFileContract /> Convert to Deal
+                      </button>
+                    )}
+
+                    {inquiry.status === 'converted' && (
+                      <Link
+                        href={`/profile/deals/${inquiry.dealId}`}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700 flex items-center justify-center gap-1"
+                      >
+                        <FaFileContract /> View Deal
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -148,6 +447,98 @@ export default function MyInquiriesPage() {
           </div>
         )}
       </div>
+
+      {/* ✅ Convert to Deal Modal */}
+      {showConvertModal && selectedInquiry && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={(e) => e.target === e.currentTarget && setShowConvertModal(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Convert to Deal</h2>
+              <button onClick={() => setShowConvertModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl">
+                <FaTimes />
+              </button>
+            </div>
+            <p className="text-gray-600 mb-2 font-medium">{selectedInquiry.propertyTitle}</p>
+            <p className="text-sm text-gray-500 mb-6">{selectedInquiry.propertyLocation}</p>
+
+            <form onSubmit={handleConvertSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Agreed Price (₹) *</label>
+                <div className="relative">
+                  <FaRupeeSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="number"
+                    value={dealForm.agreedPrice}
+                    onChange={(e) => setDealForm({ ...dealForm, agreedPrice: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg pl-10 p-3 focus:ring-2 focus:ring-green-500"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Security Deposit (₹)</label>
+                <div className="relative">
+                  <FaRupeeSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="number"
+                    value={dealForm.securityDeposit}
+                    onChange={(e) => setDealForm({ ...dealForm, securityDeposit: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg pl-10 p-3"
+                    placeholder="Optional - usually 2 months rent"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+                <input
+                  type="date"
+                  value={dealForm.startDate}
+                  onChange={(e) => setDealForm({ ...dealForm, startDate: e.target.value })}
+                  min={minDate}
+                  className="w-full border border-gray-300 rounded-lg p-3"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (months)</label>
+                <select
+                  value={dealForm.duration}
+                  onChange={(e) => setDealForm({ ...dealForm, duration: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg p-3"
+                >
+                  <option value="3">3 months</option>
+                  <option value="6">6 months</option>
+                  <option value="11">11 months</option>
+                  <option value="12">12 months</option>
+                  <option value="24">24 months</option>
+                </select>
+              </div>
+
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p className="text-sm font-semibold text-green-800 mb-2">📄 Documents that will be generated:</p>
+                <ul className="text-sm text-green-700 space-y-1">
+                  <li>✓ Rent/Sale Agreement</li>
+                  <li>✓ Stamp Paper (e-stamp)</li>
+                  <li>✓ ID Verification Documents</li>
+                  <li>✓ Property Details Report</li>
+                </ul>
+                <p className="text-xs text-green-600 mt-2">All documents will be sent to your email.</p>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isConverting}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition"
+              >
+                {isConverting ? 'Converting...' : 'Confirm & Generate Documents'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

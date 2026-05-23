@@ -122,6 +122,10 @@ const PUBLIC_ROUTES = [
   '/api/auth/resend-otp',
   '/api/properties',
   '/api/properties/',
+  
+  // ✅ ADD THESE - Inquiries API (public for GET, POST needs auth but middleware handles later)
+  '/api/inquiries',
+  '/api/inquiries/',
 ];
 
 // ✅ Check if route is public
@@ -131,6 +135,11 @@ function isPublicRoute(pathname) {
   
   // Property detail pages (e.g., /properties/123)
   if (pathname.startsWith('/properties/') && pathname !== '/properties') {
+    return true;
+  }
+  
+  // ✅ Inquiries API routes - allow all (auth handled inside API)
+  if (pathname.startsWith('/api/inquiries')) {
     return true;
   }
   
