@@ -172,7 +172,7 @@
 // }
 
 
-
+// app/api/inquiries/route.js - Handles creating new inquiries and fetching user's inquiries
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/src/lib/db';
 import Inquiry from '@/src/models/Inquiry';
