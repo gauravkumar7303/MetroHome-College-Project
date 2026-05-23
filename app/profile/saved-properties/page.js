@@ -1,3 +1,4 @@
+//path: app/profile/saved-properties/page.js
 'use client'
 
 import { useState } from 'react'

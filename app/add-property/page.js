@@ -1,0 +1,1 @@
+//app/add-property/page.js - Add new property form with image upload and validation

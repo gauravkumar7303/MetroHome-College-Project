@@ -1,3 +1,4 @@
+//path: app/profile/page.js
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -6,7 +7,7 @@ import Link from 'next/link'
 import { 
   FaUser, FaHome, FaHeart, FaEnvelope, FaCog, 
   FaPlusCircle, FaStar, FaEye, FaPhone, FaMapMarkerAlt,
-  FaCalendarAlt, FaCheckCircle, FaSignOutAlt, FaSpinner
+  FaCalendarAlt, FaCheckCircle, FaSignOutAlt, FaSpinner, FaFileContract
 } from 'react-icons/fa'
 import { getCurrentUser, isAuthenticated, clearAuthData } from '@/src/utils/auth'
 import toast from 'react-hot-toast'
@@ -108,6 +109,7 @@ export default function ProfilePage() {
     { id: 'saved-properties', label: 'Saved Properties', icon: FaHeart, href: '/profile/saved-properties' },
     { id: 'inquiries', label: 'Inquiries', icon: FaEnvelope, href: '/profile/inquiries' },
     { id: 'settings', label: 'Settings', icon: FaCog, href: '/profile/settings' },
+    { id: 'deals', label: 'My Deals', icon: FaFileContract, href: '/profile/deals' },
   ]
 
   return (

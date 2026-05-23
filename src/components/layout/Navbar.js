@@ -292,7 +292,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { 
   FaBars, FaTimes, FaUser, FaHome, FaHeart, FaCog, FaSignOutAlt, 
   FaChevronDown, FaBuilding, FaCity, FaStore, FaTree, 
-  FaHotel, FaBed, FaCalendar, FaEnvelope
+  FaHotel, FaBed, FaCalendar, FaEnvelope, FaFileContract
 } from 'react-icons/fa'
 import { isAuthenticated, getCurrentUser, clearAuthData } from '@/src/utils/auth'
 
@@ -369,6 +369,7 @@ export default function Navbar() {
     { href: '/profile/visits', label: 'My Visits', icon: FaCalendar },
     { href: '/profile/inquiries', label: 'Inquiries', icon: FaEnvelope },
     { href: '/profile/settings', label: 'Settings', icon: FaCog },
+     { href: '/profile/deals', label: 'My Deals', icon: FaFileContract }, 
   ]
 
   const getNavbarClass = () => {

@@ -1,3 +1,4 @@
+//Path: app/profile/add-property/page.js
 'use client'
 
 import { useState } from 'react'
